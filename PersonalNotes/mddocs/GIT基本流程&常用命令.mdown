@@ -27,8 +27,8 @@ git add -A #添加当前目录下所有文件
 ```
 ###3. commit(添加版本)
 ```bash
-git commit -m ‘initial version’ # -m 后面参数为注释
-git commit -a -m ‘initial version’ #把所有已经添加的文件都提交。
+git commit -m ‘initial version’ # -m 后面参数为注释，无参数 -a ,commit这个文件添加时的状态，不会把文件之后的修改也commit进去
+git commit -a -m ‘initial version’ #把所有已经添加的文件都提交，包括添加后对文件的修改。
 ```
 ###4. push(推送变更)
 ```bash
