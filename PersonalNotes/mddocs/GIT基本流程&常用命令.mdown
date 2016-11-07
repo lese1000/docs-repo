@@ -1,0 +1,58 @@
+##GIT基本流程&常用命令
+
+>- Git clone
+>- Git add
+>- Git commit
+>- Git push
+>- Git checkout
+>- Git reset
+>- Git pull
+>- Git status
+>- Git branch
+>//advanced
+>- Git tag
+>- Git log
+>- Git merge
+
+###1. clone(初始化仓库)
+```bash
+git clone https://github.com/lese1000/docs-repo.git #(远程仓库)
+#将远程仓库拷贝到当前目录下创，并建 docs-repo目录（工作目录）
+# git init 初始化本地仓库--设置本地指定目指为工作目录
+```
+###2. add（添加文件）
+```bash
+git add filename1 filename2 # 添加指定文件
+git add -A #添加当前目录下所有文件
+```
+###3. commit(添加版本)
+```bash
+git commit -m ‘initial version’ # -m 后面参数为注释
+git commit -a -m ‘initial version’ # 添加文件和提交文件合并操作。
+```
+###4. push(推送变更)
+```bash
+git push origin master # 把自己master的分支提交到名字为origin的服务器上
+# 克隆下来的仓库可直接  git push 即可。
+# git remote -v 列出服务器端的别名和地址
+# 本地初始化的仓库提交到服务器需：
+git remote add code_a git://url/test.git  #添加服务器地址,code_a是别名
+# 另  git fetch code_a  #复制服务器的仓库到本地，但不合并，git pull会自动合并
+# 另  git merge code_a/master #把服务器master分支合并到自己当前版本下
+```
+##创建到提交服务器流程整合：（create a new repository on github）
+```bash
+echo "# demo-repo" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/lese1000/demo-repo.git
+git push -u origin master
+```
+-----------------------------
+###Note:在提交到服务器之前需
+创建一个身份标识（将testUsername和testEmail@qq.com改成你自己的用户名和邮箱）
+```bash
+git config --global user.name testUsername #用户名
+git config --global user.email testEmail@qq.com #邮箱
+```
