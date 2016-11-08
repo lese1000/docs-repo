@@ -1,4 +1,4 @@
-### Git Opt Log 2016-11-08
+### Git Opt Log：update git remote :2016-11-08
 
 ```bash
 $ git remote -v

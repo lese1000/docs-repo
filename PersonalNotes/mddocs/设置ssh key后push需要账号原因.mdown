@@ -10,7 +10,7 @@ git remote add origin git@github.com:Username/Your_Repo_Name.git
 ```
 之后还需要重新设置track branch，比如：
 ```bash
-git branch --set-upstream-to=origin/master master
+git branch --set-upstream-to=origin/master master  #该方式不行
 error: the requested upstream branch 'origin/master' does not exist
 hint:
 hint: If you are planning on basing your work on an upstream
@@ -20,7 +20,18 @@ hint:
 hint: If you are planning to push out a new local branch that
 hint: will track its remote counterpart, you may want to use
 hint: "git push -u" to set the upstream config as you push.
-
+```
+```bash
+$ git push --set-upstream  origin master #根据上述提示，采用该方式可以
+Counting objects: 6, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (6/6), 1.50 KiB | 0 bytes/s, done.
+Total 6 (delta 1), reused 0 (delta 0)
+remote: Resolving deltas: 100% (1/1), completed with 1 local objects.
+To github.com:lese1000/docs-repo.git
+   72a55eb..3cd06ca  master -> master
+Branch master set up to track remote branch master from origin.
 ```
 对于HTTPS方式，可以在~/.netrc文件里设定用户名密码，不过这样的风险在于密码是明文存放在这个文件里的，比较容易泄露
 ```
