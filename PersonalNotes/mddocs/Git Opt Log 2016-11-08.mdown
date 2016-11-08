@@ -1,0 +1,64 @@
+### Git Opt Log 2016-11-08
+
+```bash
+$ git remote -v
+origin  https://github.com/lese1000/docs-repo.git (fetch)
+origin  https://github.com/lese1000/docs-repo.git (push)
+```
+```bash
+$ git remote remove origin
+$ git remote add origin git@github.com:lese1000/docs-repo.git
+```
+```bash
+$ git remote -v
+origin  git@github.com:lese1000/docs-repo.git (fetch)
+origin  git@github.com:lese1000/docs-repo.git (push)
+```
+```bash
+$ git push
+fatal: The current branch master has no upstream branch.
+To push the current branch and set the remote as upstream, use
+
+git push --set-upstream origin master
+```
+```bash
+$ git branch --set-upstream-to=origin/master master
+error: the requested upstream branch 'origin/master' does not exist
+hint:
+hint: If you are planning on basing your work on an upstream
+hint: branch that already exists at the remote, you may need to
+hint: run "git fetch" to retrieve it.
+hint:
+hint: If you are planning to push out a new local branch that
+hint: will track its remote counterpart, you may want to use
+hint: "git push -u" to set the upstream config as you push.
+```
+```bash
+$ git branch
+* master
+```
+```bash
+$ git fetch
+From github.com:lese1000/docs-repo
+ * [new branch]      master     -> origin/master
+ 
+```
+```bash
+$ git push
+fatal: The current branch master has no upstream branch.
+To push the current branch and set the remote as upstream, use
+
+    git push --set-upstream origin master
+```
+```bash
+$ git push --set-upstream  origin master
+Counting objects: 6, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (6/6), 1.50 KiB | 0 bytes/s, done.
+Total 6 (delta 1), reused 0 (delta 0)
+remote: Resolving deltas: 100% (1/1), completed with 1 local objects.
+To github.com:lese1000/docs-repo.git
+   72a55eb..3cd06ca  master -> master
+Branch master set up to track remote branch master from origin.
+```
