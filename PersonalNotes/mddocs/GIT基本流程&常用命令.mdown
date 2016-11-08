@@ -56,3 +56,24 @@ git push -u origin master
 git config --global user.name testUsername #用户名
 git config --global user.email testEmail@qq.com #邮箱
 ```
+
+###5. 创建并管理分支
+**`分支类似备份点，可以创建多个，可在各分支上对文件操作`**。但在两个分支的同一个文件的同一个地方都做了修改，这时候会冲突，merge就会失败。merge不会删除分支，它的实质是把两个版本合在一起，然后在当前分支创建一个新的commit。
+```bash
+git branch test  #创建一个test分支
+git checkout test  #转到test分支
+# edit something...commit something...
+git checkout master  #转到master分支
+git merge test  #合并test分支
+git checkout -b test2  #创建test2分支，并转到test2分支
+git branch -d test #删除test分支
+git branch  #列出分支列表
+git branch -v  #列出分支列表和当前commit
+```
+###6. 撤消改动
+```bash
+git reset HEAD readme  #把readme文件从暂存区域去除
+git checkout -- filename1 #只撤消对这一个文件的修改，还原之前版本
+git reset --hard HEAD^ #回滚到上一个版本
+#HEAD是指向当前版本，^指当前版本的父版本，这个操作无法撤消。可以把--hard换成--soft，这只会回退commit信息。还有一个--mixed默认选项。
+```
