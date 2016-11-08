@@ -51,10 +51,15 @@ git push -u origin master
 ```
 -----------------------------
 ###Note:在提交到服务器之前需
-创建一个身份标识（将testUsername和testEmail@qq.com改成你自己的用户名和邮箱）
+*1.创建一个身份标识（将testUsername和testEmail@qq.com改成你自己的用户名和邮箱）
 ```bash
 git config --global user.name testUsername #用户名
 git config --global user.email testEmail@qq.com #邮箱
+```
+*2.生成ssh-key并测试ssh连接
+```bash
+ssh-keygen -t rsa -C "xxxxxx@yy.com"  #建议填写自己真实有效的邮箱地址，将公钥（id_rsa.pub内容）复制到github上
+ssh -T git@github.com #Hi lese1000! You've successfully authenticated, but GitHub does not provide shell access. 出现这句话，说明设置成功。
 ```
 
 ###5. 创建并管理分支
@@ -76,4 +81,12 @@ git reset HEAD readme  #把readme文件从暂存区域去除
 git checkout -- filename1 #只撤消对这一个文件的修改，还原之前版本
 git reset --hard HEAD^ #回滚到上一个版本
 #HEAD是指向当前版本，^指当前版本的父版本，这个操作无法撤消。可以把--hard换成--soft，这只会回退commit信息。还有一个--mixed默认选项。
+```
+
+##其他
+```bash
+git config --list #查看所有配置信息
+git remote -v  #查看仓库远程连接信息 别名 地址
+#origin  https://github.com/lese1000/docs-repo.git (fetch)
+#origin  https://github.com/lese1000/docs-repo.git (push)
 ```
