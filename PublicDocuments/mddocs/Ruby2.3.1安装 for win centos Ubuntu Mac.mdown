@@ -89,8 +89,9 @@ bash -s stable --autolibs=enabled --ruby --rails --trace
 可能会有警告，有提示把某一句加入/Users/LeoLan/.bash_profile 中，重开终端。rvm -v显示版本，说明安装成功。
 
 
-- 安装homebrew（官网http://brew.sh/index_zh-cn.html）
-https://github.com/Homebrew/homebrew/usr/bin/ruby使用的是mac自带的2.0版本的ruby，也可以直接用ruby使用新版本的ruby。
+- 安装homebrew（官网http://brew.sh/index_zh-cn.html）https://github.com/Homebrew/homebrew/usr/bin/
+- ruby使用的是mac自带的2.0版本的ruby，也可以直接用ruby使用新版本的ruby。
+
 ```bash
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew -v

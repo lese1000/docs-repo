@@ -19,10 +19,10 @@ $ git push
 fatal: The current branch master has no upstream branch.
 To push the current branch and set the remote as upstream, use
 
-git push --set-upstream origin master
+git push --set-upstream origin master  
 ```
 ```bash
-$ git branch --set-upstream-to=origin/master master
+$ git branch --set-upstream-to=origin/master master #该命令错误，多了后面的maste，参见后面的用法
 error: the requested upstream branch 'origin/master' does not exist
 hint:
 hint: If you are planning on basing your work on an upstream
@@ -62,3 +62,41 @@ To github.com:lese1000/docs-repo.git
    72a55eb..3cd06ca  master -> master
 Branch master set up to track remote branch master from origin.
 ```
+
+
+---------------------
+
+- ### git push --set-upstream origin master
+- ### git branch --set-upstream-to=origin/master
+```bash
+$ git pull #pull方式：
+From github.com:lese1000/ueditor
+ * [new branch]      master     -> origin/master
+There is no tracking information for the current branch.
+Please specify which branch you want to merge with.
+See git-pull(1) for details.
+
+    git pull <remote> <branch> #方式1：指定地址、分支（每次操作都需要指定）
+
+If you wish to set tracking information for this branch you can do so with:
+
+    git branch --set-upstream-to=origin/<branch> master #方式2：设置当前分支需要提交到的远程服务和分支（推荐，设置一次，之后便可直接 git pull。）
+---------------------------------------------------------------------------
+    git branch --set-upstream-to=origin/master
+    Branch master set up to track remote branch master from origin.
+    
+```
+```bash
+$ git push # 同上，与pull类似，但没有方式1.即不能每次上传指定 服务器和分支
+fatal: The current branch master has no upstream branch.
+To push the current branch and set the remote as upstream, use
+
+    git push --set-upstream origin master
+```
+----
+##说明
+-  git remote add origin url
+-  git branch --set-upstream-to=origin/master
+-  git push/pull
+
+ **`为本地仓库添加新的远程仓库地址，需要设置push/pull的本地分支对应的远程仓库的分支。（第二步）`**
