@@ -1,18 +1,12 @@
 ##MySQL日期时间函数大全
-
+**时间戳是从1970年1月1日开始到目标时间所经过的秒数.可以进行两个datetime时间间隔的运算**
+##一、日期时间 Extract（选取） 函数
 - **DAYOFWEEK(date)**   返回日期date是星期几(1=星期天,2=星期一,……7=星期六,ODBC标准)
 ```bash
 mysql> select DAYOFWEEK('1998-02-03'); 
 　　-> 3 
 ```
-- **WEEKDAY(date)** 
-　返回日期date是星期几(0=星期一,1=星期二,……6= 星期天)。 
-```bash
-mysql> select WEEKDAY('1997-10-04 22:23:00'); 
-　　-> 5 
-mysql> select WEEKDAY('1997-11-05'); 
-　　-> 2 
-```
+
 - **DAYOFMONTH(date)** 
 　返回date是一月中的第几日(在1到31范围内) 
 ```bash
@@ -24,6 +18,14 @@ mysql> select DAYOFMONTH('1998-02-03');
 ```bash
 mysql> select DAYOFYEAR('1998-02-03'); 
 　　-> 34 
+```
+- **WEEKDAY(date)** 
+　返回日期date是星期几(0=星期一,1=星期二,……6= 星期天)。 
+```bash
+mysql> select WEEKDAY('1997-10-04 22:23:00'); 
+　　-> 5 
+mysql> select WEEKDAY('1997-11-05'); 
+　　-> 2 
 ```
 - **MONTH(date)** 
 　返回date中的月份数值 
@@ -83,27 +85,16 @@ mysql> select MINUTE('98-02-03 10:05:03');
 mysql> select SECOND('10:05:03'); 
 　　-> 3 
 ```
-- **PERIOD_ADD(P,N)** 
-　增加N个月到时期P并返回(P的格式YYMM或YYYYMM) 
+
+##二、对日期时间进行加减法运算
 ```bash
-mysql> select PERIOD_ADD(9801,2); 
-　　-> 199803 
-```
-- **PERIOD_DIFF(P1,P2)** 
-　返回在时期P1和P2之间月数(P1和P2的格式YYMM或YYYYMM)
-```bash
-mysql> select PERIOD_DIFF(9802,199703); 
-　　-> 11 
-```
-##对日期时间进行加减法运算
-```
-- DATE_ADD(date,INTERVAL expr type)
-- DATE_SUB(date,INTERVAL expr type) 
+- DATE_ADD(date,INTERVAL expr type) #推荐
+- DATE_SUB(date,INTERVAL expr type) #推荐
 - ADDDATE(date,INTERVAL expr type) 
 - SUBDATE(date,INTERVAL expr type)
 ```
 
-***ADDDATE()和SUBDATE()是DATE_ADD()和DATE_SUB()的同义词***
+***ADDDATE()和SUBDATE()是DATE_ADD()和DATE_SUB()的同义词，推荐使用DATE_ADD()和DATE_SUB()***
 
 - **date是一个DATETIME或DATE值**
 - **expr对date进行加减法的一个表达式字符串**
@@ -134,12 +125,15 @@ mysql> select PERIOD_DIFF(9802,199703);
 　如果增加MONTH、YEAR_MONTH或YEAR,天数大于结果月份的最大天数则使用最大天数) 
 ```
 ```bash
-mysql> SELECT "1997-12-31 23:59:59" INTERVAL 1 SECOND; 
+mysql> SELECT "1997-12-31 23:59:59" + INTERVAL 1 SECOND; --ok
 　　-> 1998-01-01 00:00:00 
-mysql> SELECT INTERVAL 1 DAY "1997-12-31"; 
-　　-> 1998-01-01 
-mysql> SELECT "1998-01-01" - INTERVAL 1 SECOND; 
+
+mysql> SELECT + INTERVAL 1 DAY "1997-12-31";  --error 时间需放在前面
+　　
+mysql> SELECT "1998-01-01" - INTERVAL 1 SECOND; --ok
 　　-> 1997-12-31 23:59:59 
+
+
 mysql> SELECT DATE_ADD("1997-12-31 23:59:59",INTERVAL 1 SECOND); 
 　　-> 1998-01-01 00:00:00 
 mysql> SELECT DATE_ADD("1997-12-31 23:59:59",INTERVAL 1 DAY); 
@@ -152,6 +146,8 @@ mysql> SELECT DATE_ADD("1998-01-01 00:00:00", INTERVAL "-1 10" DAY_HOUR);
 　　-> 1997-12-30 14:00:00 
 mysql> SELECT DATE_SUB("1998-01-02", INTERVAL 31 DAY); 
 　　-> 1997-12-02 
+
+
 mysql> SELECT EXTRACT(YEAR FROM "1999-07-02"); 
 　　-> 1999 
 mysql> SELECT EXTRACT(YEAR_MONTH FROM "1999-07-02 01:02:03"); 
@@ -159,20 +155,34 @@ mysql> SELECT EXTRACT(YEAR_MONTH FROM "1999-07-02 01:02:03");
 mysql> SELECT EXTRACT(DAY_MINUTE FROM "1999-07-02 01:02:03"); 
 　　-> 20102 
 ```
-- **TO_DAYS(date)** 
-　返回日期date是西元0年至今多少天(不计算1582年以前)
+**也可以用运算符 +和-,而不是函数,且操作的时间需要在前**
+###2)另类日期加减函数:
+- **PERIOD_ADD(P,N)** 
+　增加N个月到时期P并返回(P的格式YYMM或YYYYMM) 
 ```bash
-mysql> select TO_DAYS(950501); 
-　　-> 728779 
-mysql> select TO_DAYS('1997-10-07'); 
-　　-> 729669
-``` 
-- **FROM_DAYS(N)** 
-　给出西元0年至今多少天返回DATE值(不计算1582年以前)
-```bash
-mysql> select FROM_DAYS(729669); 
-　　-> '1997-10-07' 
+mysql> select PERIOD_ADD(9801,2); 
+　　-> 199803 
 ```
+- **PERIOD_DIFF(P1,P2)** 
+　返回在时期P1和P2之间月数(P1和P2的格式YYMM或YYYYMM)
+```bash
+mysql> select PERIOD_DIFF(9802,199703); 
+　　-> 11 
+```
+- **TIMEDIFF(time1,time2)**
+```bash
+select timediff('23:40:00', ' 18:30:00'); -- 两时间相减
+select substring( timediff('23:40:00', ' 18:30:00'),1,5) ----“05：10”相减返回小时：分钟
+```
+- **DATEDIFF(date1,date2)**
+```bash
+select datediff('2008-08-08', '2008-08-01'); -- 7      -----两日期相减
+
+
+select TO_DAYS('2008-09-08')-TO_DAYS('2008-08-08')     -----两日期相减
+select substring( '2009-06-17 10:00:00',1,10)   ----从datetime中提取“日期”
+```
+##三、日期格式化函数（日期/时间转换为字符串）
 - **DATE_FORMAT(date,format)** 
 　根据format字符串格式化date值
 　(在format字符串中可用标志符:
@@ -217,6 +227,8 @@ mysql> select DATE_FORMAT('1997-10-04 22:23:00','%H %k %I %r %T %S %w');
 ```
 - **TIME_FORMAT(time,format)**
 　和DATE_FORMAT()类似,但TIME_FORMAT只处理小时、分钟和秒(其余符号产生一个NULL值或0)
+
+##四、获得当前日期时间 函数
 - **CURDATE()** 
 - **CURRENT_DATE()**
 　以'YYYY-MM-DD'或YYYYMMDD格式返回当前日期值(根据返回值所处上下文是字符串或数字) 
@@ -237,6 +249,10 @@ mysql> select CURTIME() 0;
 ```
 - **NOW()** 
 - **SYSDATE()** 
+
+##五、时间戳（Timestamp）函数
+### 1）获得当前时间戳函数：
+- **CURRENT_TIMESTAMP**
 - **CURRENT_TIMESTAMP()**
 　以'YYYY-MM-DD HH:MM:SS'或YYYYMMDDHHMMSS格式返回当前日期时间(根据返回值所处上下文是字符串或数字) 
 ```bash
@@ -245,6 +261,7 @@ mysql> select NOW();
 mysql> select NOW() 0; 
 　　-> 19971215235026 
 ```
+###2）（Unix 时间戳、日期）转换函数：
 - **UNIX_TIMESTAMP()** 
 - **UNIX_TIMESTAMP(date)** 
 　返回一个Unix时间戳(从'1970-01-01 00:00:00'GMT开始的秒数,date默认值为当前时间)
@@ -268,6 +285,8 @@ mysql> select FROM_UNIXTIME(875996580) 0;
 mysql> select FROM_UNIXTIME(UNIX_TIMESTAMP(),'%Y %D %M %h:%i:%s %x'); 
 　　-> '1997 23rd December 03:43:30 x' 
 ```
+##六、日期转换函数、时间转换函数
+###1)（时间、秒）转换函数:
 - **SEC_TO_TIME(seconds)** 
 　以'HH:MM:SS'或HHMMSS格式返回秒数转成的TIME值(根据返回值所处上下文是字符串或数字) 
 ```bash
@@ -283,4 +302,38 @@ mysql> select TIME_TO_SEC('22:23:00');
 　　-> 80580 
 mysql> select TIME_TO_SEC('00:39:38'); 
 　　-> 2378
+```
+-----
+###2)（日期、天数）转换函数：
+- **TO_DAYS(date)** 
+　返回日期date是西元0年至今多少天(不计算1582年以前)
+```bash
+mysql> select TO_DAYS(950501); 
+　　-> 728779 
+mysql> select TO_DAYS('1997-10-07'); 
+　　-> 729669
+``` 
+
+- **FROM_DAYS(N)** 
+　给出西元0年至今多少天返回DATE值(不计算1582年以前)
+```bash
+mysql> select FROM_DAYS(729669); 
+　　-> '1997-10-07' 
+```
+
+-  **LAST_DAY(date)** 返回月份中的最后一天。
+
+```bash
+mysql> select LAST_DAY('2008-02-01'); 
+    -> 2008-02-29
+mysql> select LAST_DAY(NOW());
+    -> 2008-08-31
+mysql> select DAY(LAST_DAY(NOW())) as days;#计算一个月有多少天
+    ->31 
+```
+-----
+###3)（字符串转换为日期）函数：
+```bash
+mysql> select STR_TO_DATE('08/09/2008', '%m/%d/%Y'); 
+    -> 2008-08-09
 ```
