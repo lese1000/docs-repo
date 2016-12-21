@@ -1,0 +1,55 @@
+1.检查8080端口是否被占用：netstat -anp | grep 8080  
+2.查看是那个程序占用的端口： lsof -i:8080  
+3.查看该应用程序的进程信息：ps 5472  
+4.查看该进程的状态： pidstat -p 5472  
+说明:
+pid：进程号
+
+%usr：用户应用程序占用cpu
+
+%system：系统占用cpu
+
+%guest:其它cpu
+
+%cpu：总共占用的cpu
+
+cpu：cpu核数，由于是虚拟机，所以0
+
+command：进程指令
+
+5.查看端口服务是否正常运行：service iptables status 
+
+
+
+在防火墙总添加端口：
+
+用vi打开 /etc/sysconfig/iptables
+
+打开防火前通过端口:
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT
+
+此行必须放在
+
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+
+这两行的前面，否则一样无效。
+
+
+编辑好防火墙，重启防火墙服务：
+
+[root@centosvm /]# service iptables restart
+
+重启服务tomcat，就可以访问tomcat了。
+
+
+    让服务器 启动时候自动 运行 tomcat 了。    
+    我们最简单的方法就是通过startup.sh来自动启动Tomcat，编辑vi /etc/rc.d/rc.local    
+    文件最后增加内容(假设JDK目录是/usr/java，Tomcat目录是/usr/local/tomcat)    
+    export JDK_HOME=/usr/java/jdk1.7.0    
+    export JAVA_HOME=/usr/java/jdk1.7.0    
+    /usr/tomcat/bin/startup.sh    
+    保存退出    
+
+
