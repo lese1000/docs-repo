@@ -1,0 +1,75 @@
+1、环境
+系统环境：windows 2008 R2
+
+JDK VERSION: 1.7.0_10
+
+
+
+2、下载地址
+
+MAVEN 下载地址：http://maven.apache.org/download.cgi
+
+选择 Maven 3.3.3 (Binary tar.gz)   或 Maven 3.3.3 (Binary zip)
+
+
+
+3、配置系统环境
+
+解压：将下载MAVEN （apache-maven-3.3.3）压缩包进行解压放置在 C盘根目录下。
+
+设置环境变量：计算机环境变量(系统变量部分) -> 新建变量名"  MAVEN_HOME "，变量值：" C:\apache-maven-3.3.3 "  确定（保存），更改path:
+
+在末尾追加 ”  ;%MAVEN_HOME%\bin “。
+
+
+
+打开cmd 命令 输入 ”  MVN -V “ 命令行出现, MAVEN 3.3.3 版本号，系统环境配置成功。
+
+
+
+4、更改maven 的仓库默认存放地址
+
+修改C:\apache-maven-3.3.3 下的 conf 文件夹下的 settings.xml 文件
+
+更改localRepository 配置节 ：<localRepository>E:/workspace/maven/repo</localRepository>
+
+
+
+5、下载相关包
+
+在 cmd 中敲并回车执行：mvn help:system
+
+
+二、在Myeclipse 中使用Maven
+
+打开myeclipse2014 选择 window -> prefences -> MyEclipse 下的-> Maven4MyEclipse 
+
+1、修改 " Maven4MyEclipse" 下的Installations 点击 ” Add “ 选择目录 ” C:\apache-maven-3.3.3“ 
+
+Global settings from installation directory( open file) 选择C:\apache-maven-3.3.3\conf\settings.xml
+
+2、修改 " Maven4MyEclipse" 下的 User Settings  下的 User Settings 属性” C:\apache-maven-3.3.3\conf\settings.xml“ ，保存确认。
+
+
+
+三、将springside4项目转换为myeclipse项目(创建项目参见：https://github.com/springside/springside4/wiki/CreateNewProject)
+
+（1）springside4\modules 目录
+
+	运行：mvn install注：该命令的作用，将所有module编译打包安装到Maven的本地仓库。
+
+（2）springside4\examples\quickstart 目录
+	
+	运行：mvn eclipse:eclipse注：该命令的作用，将quickstart 项目生成为普通elipse项目，这样就可以在eclipse中导入(import)了。
+
+（3)初始化数据库（使用默认的 H2 database）进入springside4\examples\quickstart目录
+
+ 	运行：mvn antrun:run -Prefresh-db注：可CMD进入springside4\support\h2目录运行：mvn exec:java 对本地的H2数据库进行管理(用户：sa 密码：(为空))
+
+	本地H2数据库文件位置： C:\Users\用户名\.h2 
+
+（4)运行(使用内嵌的jetty server运行项目)
+
+	在eclipse中，右击quickstart中的pom.xml文件
+
+	选择：Run ConfigurationBase diretory： 选择quickstart项目
