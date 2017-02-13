@@ -1,0 +1,116 @@
+一、MessageDialog   
+1,MessageDialog的用法很简单   
+MessageDialog.openInfomation(shell,title,message);   
+MessageDialog.openConfirm(shell,title,message);   
+MessageDialog.openQuestion(shell,title,message);   
+MessageDialog.openError(shell,title,message);   
+
+
+  
+2，这四个的不同之处有三点：   
+                   提示的图标、     显示的按钮、         返回值   
+openInfomation     类似i的图标       一个确定            void  
+openConfirm        问号图标         确定和取消          boolean  
+openQuestion       问号图标         是和否              boolean  
+openError         一个X的图标       确定                void  
+  
+最后说一下，MessageDialog的大小不能根据内容自动调整，对于少量提示信息的时候显得大了些。
+   
+3，InputDialog输入的dialog   
+使用方法：   
+InputDialog inputDialog = new InputDialog(shell,"标题","提示信息","默认值",null);   
+if(inputDialog.open() == InputDialog.OK){   
+     String value = dialog.getValue();   
+}   
+注意最后一个参数是"验证器"，如果想验证数据可以提供一个验证器，并在这里使用。验证其的写法：   
+public class MyValidator implements IInputValidaor{   
+    public String isValid(String newText){   
+        float value = 0;   
+        try{   
+             value = Float.valueOf(newText).floatValue();   
+         }catch(NumberFormatException e){   
+            return "错误:请输入数值";   
+         }   
+        if(value>0 && value<100){   
+            return null;   
+         }else{   
+            return "错误：请输入大于0，小于100的数";   
+         }   
+     }   
+}   
+  
+然后改写定义语句为   
+InputDialog inputDialog = new InputDialog(shell,"标题","提示信息","默认值",new MyValidator());   
+二、上边说了MessageDialog不能自动调整大小，那什么能自动调整大小呢？答案是MessageBox.   
+同样继承自Dialog.   
+1,使用方法：MessageBox的使用方法稍微复杂，需要3句   
+MessageBox mb = new MessageBox(shell);   
+mb.setMessage("提示信息");   
+mb.open();   
+2,MessageBox同样可以控制图标和按钮数   
+是通过new的时候加入式样来实现的，例如   
+MessageBox mb = new MessageBox(shell,SWT._ICON_QUEST|SWT.YES|SWT.NO);   
+  
+做过SWT开发的人对这种格式应该不陌生，到处都是。   
+  
+图标的种类：   
+SWT.ICON_ERROR   
+SWT.ICON_INFORMATION   
+SWT.ICON_QUESTION   
+SWT.ICON_WARNING   
+  
+按钮的组合：   
+SWT.OK   
+SWT.OK|SWT.CANCEL   
+SWT.YES|SWT.NO   
+SWT.YES|SWT.NO|SWT.CANCEL   
+SWT.RETRY|SWT.CANCEL   
+SWT.ABORT|SWT.RETRY|SWT.IGNORE   
+仔细看一下就是我们平时经常看到的各种对话框。
+
+   
+三、颜色选择对话框   
+不多说，使用方法几乎在swt中遍地都是的用法。   
+ColorDialog dialog = new ColorDialog(shell);   
+RGB rgb = dialog.open();   
+if(rgb != null){   
+     Color color = new Color(shell.getDisplay(),rgb);   
+}   
+  
+注意color使用过后要dispose();   
+四、字体选择对话框   
+有了上边的一些经验其实在有eclipse这种编辑器的帮助下猜着就可以写了   
+FontDialog dialog = new FontDialog(shell);   
+FontData fontData = dialog.open();   
+if (fontDate != null){   
+     Font font = new Font(shell.getDisplay(),fontData);   
+}   
+  
+同样在结束后font.dispose();   
+五、打印对话框，同上的使用方法，同上的需要dispose   
+PrintDialog dialog = new PrintDialog(shell);   
+PrintData printData = dialog.open();   
+if (printDate != null){   
+     Printer printer = new Printer(printerData);   
+}   
+  
+六、文件选择对话框：同上   
+1，实现方法   
+FileDialog dialog = new FileDialog(shell,SWT.OPEN);   
+dialog.setFilterPath("c:\windows");//设置初始路径   
+String fileName = dialog.open();//返回的全路径(路径+文件名)   
+2，如果想选择多个文件，加上SWT.MULTI   
+FileDialog dialog = new FileDialog(shell,SWT.OPEN|SWT.MULTI);   
+String fileName = dialog.open();//返回最后一个选择文件的全路径   
+String[] fileNames = dialog.getFileNames();//返回所有选择的文件名，不包括路径   
+String path = dialog.getFilterPath();返回选择的路径，这个和fileNames配合可以得到所有的文件的全路径   
+3,加入filter   
+FileDialog dialog = new FileDialog(shell,SWT.OPEN|SWT.NULTI);   
+dialog.setFilterNames(new String[]{"可执行文件(*.exe),"Excel(*.xls),"所有文件""});   
+dialog.setFilterExtensions(new String[]{"*.exe","*.xls","*.*"});   
+//接受方法同2中的写法，不同就是加入了过滤器。   
+4,保存对话框   
+保存对话框并不提供保存功能，这个需要自己实现，它只提供界面，并得到用户选择的目录和输入的文件名   
+FileDialog dialog = new FileDialog(shell,SWT.SAVE);   
+String fileName = dialog.open();   
+注:保存对话框并不提供保存功能，这个需要自己实现，它只提供界面，并得到用户选择的目录和输入的文件名  
