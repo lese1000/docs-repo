@@ -34,15 +34,56 @@ wget http://dev.mysql.com/Downloads/MySQL-5.7/Mysql-5.7.15-1.el6.i686.rpm-bundle
 wget http://dev.mysql.com/Downloads/MySQL-5.7/Mysql-5.7.15-1.el7.x86_64.rpm-bundle.tar  --ok
 
 
-下载完之后，安装三个rpm软件包。
+
+（卸载之前安装的版本命令：
+1.查询: rpm -qa | grep -i mysql   
+MySQL-client-5.6.35-1.el7.x86_64
+MySQL-server-5.6.35-1.el7.x86_64
+MySQL-devel-5.6.35-1.el7.x86_64
+
+2.卸载：rpm -e ）
+rpm -e MySQL-client-5.6.35-1.el7.x86_64
+rpm -e MySQL-server-5.6.35-1.el7.x86_64
+rpm -e MySQL-devel-5.6.35-1.el7.x86_64
+
+3.删除配置信息。find / -name mysql 注：清空相关mysql的所有目录以及文件和其他配置和设置等。如果有，则删除。也必须考虑其他软件不去影响。
+
+注:删除MySQL数据库目录(关键) ，否则password不更新（默认安装，如果自定义安装路径和链接路径ln -s ……请删除。）
+rm -rf /var/lib/mysql
+
+清空相关mysql的所有目录
+rm -rf /usr/lib/mysql
+rm -rf /usr/share/mysql
+rm -rf /usr/lib64/mysql
+4.（自启服务）：
+[root@localhost usr]# chkconfig --list | grep -i mysql  
+[root@localhost usr]# chkconfig --del mysqld 
+
+6.开始安装
 [root@linuxidc tools]# rpm -ivh MySQL-server-5.6.21-1.rhel5.x86_64.rpm
+
+err1:
 error: Failed dependencies:
         libaio.so.1()(64bit) is needed by MySQL-server-5.6.21-1.rhel5.x86_64
         libaio.so.1(LIBAIO_0.1)(64bit) is needed by MySQL-server-5.6.21-1.rhel5.x86_64
         libaio.so.1(LIBAIO_0.4)(64bit) is needed by MySQL-server-5.6.21-1.rhel5.x86_64
 安装MySQL-server报错，原因是没有安装libaio，系统缺少libaio.so此软件包，下边yum安装一下libaio.so软件包。
 [root@linuxidc tools]# yum install -y libaio
+
+err2:
+FATAL ERROR: please install the following Perl modules before executing /usr/bin/mysql_install_db:
+[root@linuxidc tools]# yum install -y perl 
+(如果提示安装perl，安装mysql依然报错，则使用：yum install -y perl-Module-Install.noarch)
+
 [root@linuxidc tools]# rpm -ivh MySQL-server-5.6.21-1.rhel5.x86_64.rpm
+[root@iZ0xi0upwm5ow4eq0qyp05Z devtools]# rpm -ivh MySQL-server-5.6.35-1.el7.x86_64.rpm
+warning: MySQL-server-5.6.35-1.el7.x86_64.rpm: Header V3 DSA/SHA1 Signature, key ID 5072e1f5: NOKEY
+Preparing...                          ################################# [100%]
+Updating / installing...
+   1:MySQL-server-5.6.35-1.el7        ################################# [100%]
+
+===>该处安装时有时生成随机密码，这个看情况。不同版本或者系统之前有安装过，配置文件未删除。具体看安装时的提示信息。
+
 [root@linuxidc tools]# rpm -ivh MySQL-client-5.6.21-1.rhel5.x86_64.rpm 
 Preparing...                ########################################### [100%]
   1:MySQL-client          ########################################### [100%]
@@ -55,6 +96,7 @@ Preparing...                ########################################### [100%]
 
 7.初始化MySQL及修改MySQL默认的root密码。
 [root@linuxidc tools]# /usr/bin/mysql_install_db
+
 [root@linuxidc tools]# ps -ef | grep mysql
 root      2188    1  0 14:48 pts/1    00:00:00 /bin/sh /usr/bin/mysqld_safe --datadir=/var/lib/mysql --pid-file=/var/lib/mysql/linuxidc.pid
 mysql    2303  2188 30 14:48 pts/1    00:00:02 /usr/sbin/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib64/mysql/plugin --user=mysql --log-error=/var/lib/mysql/linuxidc.err --pid-file=/var/lib/mysql/linuxidc.pid
