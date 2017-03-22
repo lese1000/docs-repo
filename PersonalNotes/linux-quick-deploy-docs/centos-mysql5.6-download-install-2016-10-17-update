@@ -144,6 +144,41 @@ mysql>
 [root@linuxidc tools]# chkconfig mysql --list
 mysql          0:off  1:off  2:on    3:on    4:on    5:on    6:off
 
+9.创建用户并授权
+登录root账户后执行下面操作：
+方式1，先创建数据库，并授权给指定用户。（允许远程登录=>'%',本地=>'localhost'）
+create database print_db DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+grant all privileges on `print_db`.* to 'printer'@'%' identified by 'p@int2017'; 
+方式2，创建用户并授权所有权限
+grant all privileges on *.* to 'printer'@'%' identified by 'p@int2017';
+
+用户：printer
+密码：p@int2017
+
+10.其他：mysql日志存放处：/var/lib/mysql
+iZ0xi0upwm5ow4eq0qyp05Z.err =》实例名.err
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 http://www.linuxidc.com/Linux/2016-04/130414.htm（CentOS 7下MySQL 5.7安装、配置与应用）
