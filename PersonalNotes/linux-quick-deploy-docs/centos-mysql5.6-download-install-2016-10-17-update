@@ -75,6 +75,7 @@ FATAL ERROR: please install the following Perl modules before executing /usr/bin
 [root@linuxidc tools]# yum install -y perl 
 (如果提示安装perl，安装mysql依然报错，则使用：yum install -y perl-Module-Install.noarch)
 
+===>开始安装Server
 [root@linuxidc tools]# rpm -ivh MySQL-server-5.6.21-1.rhel5.x86_64.rpm
 [root@iZ0xi0upwm5ow4eq0qyp05Z devtools]# rpm -ivh MySQL-server-5.6.35-1.el7.x86_64.rpm
 warning: MySQL-server-5.6.35-1.el7.x86_64.rpm: Header V3 DSA/SHA1 Signature, key ID 5072e1f5: NOKEY
@@ -94,18 +95,26 @@ Preparing...                ########################################### [100%]
 6.修改配置文件位置。
 [root@linuxidc tools]# cp /usr/share/mysql/my-default.cnf /etc/my.cnf
 
-7.初始化MySQL及修改MySQL默认的root密码。
+7.初始化MySQL及修改MySQL默认的root密码。==>如果在安装mysql-server时已经随机生成密码，则 可直接启动 service mysql start ;
 [root@linuxidc tools]# /usr/bin/mysql_install_db
+
+8.启动MySql，并查看相关信息
+[root@linuxidc tools]# service mysql start 
 
 [root@linuxidc tools]# ps -ef | grep mysql
 root      2188    1  0 14:48 pts/1    00:00:00 /bin/sh /usr/bin/mysqld_safe --datadir=/var/lib/mysql --pid-file=/var/lib/mysql/linuxidc.pid
 mysql    2303  2188 30 14:48 pts/1    00:00:02 /usr/sbin/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib64/mysql/plugin --user=mysql --log-error=/var/lib/mysql/linuxidc.err --pid-file=/var/lib/mysql/linuxidc.pid
 root      2331  1853  0 14:49 pts/1    00:00:00 grep mysql
+
 [root@linuxidc tools]# netstat -anpt | grep 3306
 tcp        0      0 :::3306                    :::*                        LISTEN      2303/mysqld
+
+ 
+9.登录mysql，并设置root密码。 
+1）查看默认密码
 [root@linuxidc tools]# more /root/.mysql_secret
 # The random password set for the root user at Thu Apr  9 14:43:59 2015 (local time): F6K3v_xggFoLQeiN
- 
+2）登录到mysql
 [root@linuxidc tools]# mysql -uroot -pF6K3v_xggFoLQeiN
 Warning: Using a password on the command line interface can be insecure.
 Welcome to the MySQL monitor.  Commands end with ; or \g.
@@ -119,7 +128,8 @@ affiliates. Other names may be trademarks of their respective
 owners.
  
 Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
- 
+
+3）修改默认密码。 
 mysql> SET PASSWORD = PASSWORD('123.com'); 
 mysql> exit
 Bye
@@ -139,21 +149,37 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
  
 mysql>
 
-8.设置MySQL服务开机自启动。
+10.设置MySQL服务开机自启动。
 [root@linuxidc tools]# chkconfig mysql on
 [root@linuxidc tools]# chkconfig mysql --list
 mysql          0:off  1:off  2:on    3:on    4:on    5:on    6:off
 
-9.创建用户并授权
+11.创建用户并授权
 登录root账户后执行下面操作：
+
+（设置root可远程登录：grant all privileges on *.* to 'root'@'%' identified by 'root-password';需要设置远程访问的密码。）
+
 方式1，先创建数据库，并授权给指定用户。（允许远程登录=>'%',本地=>'localhost'）
-create database print_db DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+mysql> create database print_db DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
 grant all privileges on `print_db`.* to 'printer'@'%' identified by 'p@int2017'; 
 方式2，创建用户并授权所有权限
-grant all privileges on *.* to 'printer'@'%' identified by 'p@int2017';
-
+mysql> grant all privileges on *.* to 'printer'@'%' identified by 'p@int2017';
+mysql> flush privileges;
 用户：printer
 密码：p@int2017
+
+mysql>  select user,password,host from user;
++---------+-------------------------------------------+-------------------------+
+| user    | password                                  | host                    |
++---------+-------------------------------------------+-------------------------+
+| root    | *481EC6F1EDDF36DBD798A5750E66FBD3DFFFFBE2 | localhost               |
+| root    | *2A621B031A447334B3B94BA7CD1782AA6466BDD0 | iz0xi0upwm5ow4eq0qyp05z |
+| root    | *2A621B031A447334B3B94BA7CD1782AA6466BDD0 | 127.0.0.1               |
+| root    | *2A621B031A447334B3B94BA7CD1782AA6466BDD0 | ::1                     |
+| printer | *F9FCC308BB10CFD284D6D21F8866DB84359AED97 | %                       |
+| root    | *481EC6F1EDDF36DBD798A5750E66FBD3DFFFFBE2 | %                       |
++---------+-------------------------------------------+-------------------------+
+
 
 10.其他：mysql日志存放处：/var/lib/mysql
 iZ0xi0upwm5ow4eq0qyp05Z.err =》实例名.err
