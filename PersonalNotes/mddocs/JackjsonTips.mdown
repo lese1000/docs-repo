@@ -1,0 +1,37 @@
+<!--
+author: lese.tech
+title: Jackjson FAQ
+tags: Json
+category: FAQ
+status: publish
+summary: Json-lib 和 Jackjson 转换问题
+-->
+
+1.json-lib 以下写法没有问题
+```java
+Map map = JSONObject.fromObject("{a:1, b:2}");  
+```
+2.jackson 以下写法报异常
+
+```java 
+    Map map = new ObjectMapper().readValue("{a:1, b:2}", HashMap.class);
+```
+必须写成
+```java
+Map map = new ObjectMapper().readValue("{\"a\":1, \"b\":2}", HashMap.class);  
+```
+
+**解决方式**：`开启支持字段名称不带引号的转换模式,默认是关闭的.`即将上面报异常的那句改成这样：
+
+```java
+Map map = new ObjectMapper().configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true).readValue("{a:1, b:2}", HashMap.class);  
+``` 
+
+
+JSON转POJO时，若JSON中的某个字段在POJO中未定义，在默认情况下会抛异常转换失败，只要增加这个配置：
+
+ 
+```java
+Feature.FAIL_ON_UNKNOWN_PROPERTIES, false 
+``` 
+就可以转换正常，即只转换定义的字段，未定义的字段忽略。
